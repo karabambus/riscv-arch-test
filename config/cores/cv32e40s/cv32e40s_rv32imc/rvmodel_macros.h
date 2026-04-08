@@ -65,6 +65,11 @@
 #define RVMODEL_MTIME_ADDRESS    0x0200BFF8
 #define RVMODEL_MTIMECMP_ADDRESS 0x02004000
 
+##### Interrupt Delays #####
+
+#define RVMODEL_INTERRUPT_LATENCY   10
+#define RVMODEL_TIMER_INT_SOON_DELAY 100
+
 ##### Machine Interrupts #####
 
 #define RVMODEL_SET_MEXT_INT(_R1, _R2)
