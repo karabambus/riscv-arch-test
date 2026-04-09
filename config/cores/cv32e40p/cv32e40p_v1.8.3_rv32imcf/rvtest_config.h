@@ -1,1 +1,3 @@
-../rvtest_config.h
+#define RVMODEL_PMP_GRAIN 0
+#define RVMODEL_NUM_PMPS 0
+#define F_SUPPORTED
