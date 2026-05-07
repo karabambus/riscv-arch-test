@@ -92,13 +92,32 @@
 //#define RVMODEL_MTIMECMP_ADDRESS
 ##### Machine Interrupts #####
 
-#define RVMODEL_SET_MEXT_INT(_R1, _R2)
+// Virtual peripheral in cv32e20-dv mm_ram:
+//   write to 0x15000000 -> OR wdata into irq level register (assert)
+//   write to 0x1500000C -> AND NOT wdata into irq level register (deassert)
+// Bit positions match the cve2_top irq pin numbering:
+//   bit 3  -> irq_software_i  (mip.MSIP)
+//   bit 11 -> irq_external_i  (mip.MEIP)
 
-#define RVMODEL_CLR_MEXT_INT(_R1, _R2)
+#define RVMODEL_SET_MEXT_INT(_R1, _R2) \
+    LI(_R1, 1 << 11)    ; \
+    LI(_R2, 0x15000000) ; \
+    sw _R1, 0(_R2)      ;
 
-#define RVMODEL_SET_MSW_INT(_R1, _R2)
+#define RVMODEL_CLR_MEXT_INT(_R1, _R2) \
+    LI(_R1, 1 << 11)    ; \
+    LI(_R2, 0x1500000C) ; \
+    sw _R1, 0(_R2)      ;
 
-#define RVMODEL_CLR_MSW_INT(_R1, _R2)
+#define RVMODEL_SET_MSW_INT(_R1, _R2) \
+    LI(_R1, 1 << 3)     ; \
+    LI(_R2, 0x15000000) ; \
+    sw _R1, 0(_R2)      ;
+
+#define RVMODEL_CLR_MSW_INT(_R1, _R2) \
+    LI(_R1, 1 << 3)     ; \
+    LI(_R2, 0x1500000C) ; \
+    sw _R1, 0(_R2)      ;
 
 ##### Supervisor Interrupts #####
 
