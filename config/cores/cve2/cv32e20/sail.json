@@ -7,7 +7,7 @@
     "writable_fiom": true,
     "writable_hpm_counters": {
       "len": 32,
-      "value": "0xFFFF_FFFF"
+      "value": "0x0"
     },
     // The top 29 bits control whether the corresponding bits of `scounteren`
     // that control HPM counters are read-only zero. CV32E20 has no S-mode,
