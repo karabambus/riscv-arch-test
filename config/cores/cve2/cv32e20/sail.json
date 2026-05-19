@@ -5,13 +5,13 @@
     "E": false,
     "writable_misa": false,
     "writable_fiom": true,
+    // Bits 3–12 set: HPM counters 3–12 enabled per HPM_COUNTER_EN in cv32e20.yaml.
+    // Lowest 3 bits are ignored by Sail. Value: bits 3..12 set = 0x0000_1FF8.
     "writable_hpm_counters": {
       "len": 32,
-      "value": "0xFFFF_FFFF"
+      "value": "0x0000_1FF8"
     },
-    // The top 29 bits control whether the corresponding bits of `scounteren`
-    // that control HPM counters are read-only zero. CV32E20 has no S-mode,
-    // so all bits are read-only zero.
+    // CV32E20 has no S-mode, so all scounteren bits are read-only zero.
     "scounteren_writable_bits": {
       "len": 32,
       "value": "0x0"
