@@ -138,9 +138,11 @@
         },
         "include_in_device_tree": true
       },
-      // IO memory: CLINT at 0x2000000 and Sail interrupt generator at 0xC000000.
-      // mm_ram testbench peripherals (TESTSTATUS, EXIT, SIG* at 0x2000_0000;
-      // TIMER/DBG at 0x1500_0000; PRINT at 0x1000_0000) are also in this range.
+      // IO memory: CLINT at 0x2000000, Sail interrupt generator (aligned with
+      // mm_ram MMADDR_TIMERREG) at 0x1500_0000, and the full remaining 32-bit
+      // address space. mm_ram testbench peripherals (TESTSTATUS, EXIT, SIG* at
+      // 0x2000_0000; TIMER/DBG at 0x1500_0000; PRINT at 0x1000_0000) are all
+      // inside this region.
       {
         "base": {
           "len": 64,
@@ -148,7 +150,7 @@
         },
         "size": {
           "len": 64,
-          "value": "0xE000000"
+          "value": "0xFE000000"
         },
         "attributes": {
           "mem_type": "IOMemory",
@@ -193,9 +195,11 @@
       "size": 786432
     },
     // Simple MMIO device to generate interrupts for testing purposes.
+    // Aligned with mm_ram.sv MMADDR_TIMERREG (0x15000000) so RVMODEL_SET_M*_INT
+    // macro writes reach both Sail and the DUT testbench at the same address.
     "simple_interrupt_generator": {
       // Must be 4-byte aligned and within a memory region. Size is always 0x20.
-      "base": 201326592
+      "base": 352321536
     },
     "clock_frequency": 1000000000,
     "instructions_per_tick": 2,
