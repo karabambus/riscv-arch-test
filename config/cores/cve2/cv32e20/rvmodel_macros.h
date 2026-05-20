@@ -92,13 +92,41 @@
 //#define RVMODEL_MTIMECMP_ADDRESS
 ##### Machine Interrupts #####
 
-#define RVMODEL_SET_MEXT_INT(_R1, _R2)
+// Drive cv32e20 core irq pins via mm_ram virtual interrupt peripheral.
+// mm_ram.sv: MMADDR_TIMERREG=0x15000000 (mask), MMADDR_TIMERVAL=0x15000004 (countdown).
+// mip bit positions (RISC-V standard / cve2): MSI=3 (0x8), MTI=7 (0x80), MEI=11 (0x800).
 
-#define RVMODEL_CLR_MEXT_INT(_R1, _R2)
+#define RVMODEL_SET_MEXT_INT(_R1, _R2)                                  \
+    li _R1, 0x800                ; /* mask = MEI bit 11 */              \
+    li _R2, 0x15000000           ; /* MMADDR_TIMERREG */                \
+    sw _R1, 0(_R2)               ;                                      \
+    li _R1, 1                    ; /* countdown = 1 cycle */            \
+    li _R2, 0x15000004           ; /* MMADDR_TIMERVAL */                \
+    sw _R1, 0(_R2)
 
-#define RVMODEL_SET_MSW_INT(_R1, _R2)
+#define RVMODEL_CLR_MEXT_INT(_R1, _R2)                                  \
+    li _R1, 0                    ; /* mask = 0 */                       \
+    li _R2, 0x15000000           ;                                      \
+    sw _R1, 0(_R2)               ;                                      \
+    li _R1, 1                    ; /* fire: irq_q := mask (= 0) */      \
+    li _R2, 0x15000004           ;                                      \
+    sw _R1, 0(_R2)
 
-#define RVMODEL_CLR_MSW_INT(_R1, _R2)
+#define RVMODEL_SET_MSW_INT(_R1, _R2)                                   \
+    li _R1, 0x8                  ; /* mask = MSI bit 3 */               \
+    li _R2, 0x15000000           ;                                      \
+    sw _R1, 0(_R2)               ;                                      \
+    li _R1, 1                    ;                                      \
+    li _R2, 0x15000004           ;                                      \
+    sw _R1, 0(_R2)
+
+#define RVMODEL_CLR_MSW_INT(_R1, _R2)                                   \
+    li _R1, 0                    ; /* mask = 0 */                       \
+    li _R2, 0x15000000           ;                                      \
+    sw _R1, 0(_R2)               ;                                      \
+    li _R1, 1                    ; /* fire: irq_q := mask (= 0) */      \
+    li _R2, 0x15000004           ;                                      \
+    sw _R1, 0(_R2)
 
 ##### Supervisor Interrupts #####
 
