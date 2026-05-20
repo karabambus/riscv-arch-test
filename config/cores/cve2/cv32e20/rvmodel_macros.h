@@ -92,40 +92,31 @@
 //#define RVMODEL_MTIMECMP_ADDRESS
 ##### Machine Interrupts #####
 
-// Drive cv32e20 core irq pins via mm_ram virtual interrupt peripheral.
-// mm_ram.sv: MMADDR_TIMERREG=0x15000000 (mask), MMADDR_TIMERVAL=0x15000004 (countdown).
-// mip bit positions (RISC-V standard / cve2): MSI=3 (0x8), MTI=7 (0x80), MEI=11 (0x800).
+// Drive cv32e20 core irq pins via mm_ram's Sail-protocol-compatible
+// simple_interrupt_generator at 0x15000020 (matches sail.json base).
+// Per sail-riscv doc/SimpleInterruptGenerator.md v1.0:
+//   base+0: version register (read-only)
+//   base+4: platform register (write set/clear)
+//     bit 31 = 1 (set) / 0 (clear); bit 3 = MSI, bit 11 = MEI
 
 #define RVMODEL_SET_MEXT_INT(_R1, _R2)                                  \
-    li _R1, 0x800                ; /* mask = MEI bit 11 */              \
-    li _R2, 0x15000000           ; /* MMADDR_TIMERREG */                \
-    sw _R1, 0(_R2)               ;                                      \
-    li _R1, 1                    ; /* countdown = 1 cycle */            \
-    li _R2, 0x15000004           ; /* MMADDR_TIMERVAL */                \
+    li _R1, 0x80000800           ; /* set | MEI (bit 11) */             \
+    li _R2, 0x15000024           ; /* simple_interrupt_generator + 4 */ \
     sw _R1, 0(_R2)
 
 #define RVMODEL_CLR_MEXT_INT(_R1, _R2)                                  \
-    li _R1, 0                    ; /* mask = 0 */                       \
-    li _R2, 0x15000000           ;                                      \
-    sw _R1, 0(_R2)               ;                                      \
-    li _R1, 1                    ; /* fire: irq_q := mask (= 0) */      \
-    li _R2, 0x15000004           ;                                      \
+    li _R1, 0x00000800           ; /* clear | MEI (bit 11) */           \
+    li _R2, 0x15000024           ;                                      \
     sw _R1, 0(_R2)
 
 #define RVMODEL_SET_MSW_INT(_R1, _R2)                                   \
-    li _R1, 0x8                  ; /* mask = MSI bit 3 */               \
-    li _R2, 0x15000000           ;                                      \
-    sw _R1, 0(_R2)               ;                                      \
-    li _R1, 1                    ;                                      \
-    li _R2, 0x15000004           ;                                      \
+    li _R1, 0x80000008           ; /* set | MSI (bit 3) */              \
+    li _R2, 0x15000024           ;                                      \
     sw _R1, 0(_R2)
 
 #define RVMODEL_CLR_MSW_INT(_R1, _R2)                                   \
-    li _R1, 0                    ; /* mask = 0 */                       \
-    li _R2, 0x15000000           ;                                      \
-    sw _R1, 0(_R2)               ;                                      \
-    li _R1, 1                    ; /* fire: irq_q := mask (= 0) */      \
-    li _R2, 0x15000004           ;                                      \
+    li _R1, 0x00000008           ; /* clear | MSI (bit 3) */            \
+    li _R2, 0x15000024           ;                                      \
     sw _R1, 0(_R2)
 
 ##### Supervisor Interrupts #####
