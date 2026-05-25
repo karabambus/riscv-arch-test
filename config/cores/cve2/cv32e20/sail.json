@@ -195,14 +195,15 @@
       "size": 786432
     },
     // Simple MMIO device to generate interrupts for testing purposes.
-    // Aligned with mm_ram.sv's Sail-protocol decoder at 0x15000020 (next free
-    // spot after legacy TIMERREG/TIMERVAL/DBG peripherals at 0x15000000-08).
+    // Base must match sail_macros.h SAIL_SIG_ADDRESS (0xC000000+4) so the Sail
+    // reference responds to MEXT/SEXT writes. This is the Sail model's device;
+    // the DUT testbench (mm_ram) has its own decoder at 0x15000020.
     // Per sail-riscv doc/SimpleInterruptGenerator.md v1.0:
     //   base+0: version register (read-only)
     //   base+4: platform register (write set/clear: bit 31 set/clr, bits 1/3/9/11 SSI/MSI/SEI/MEI)
     "simple_interrupt_generator": {
       // Must be 4-byte aligned and within a memory region. Size is always 0x20.
-      "base": 352321568
+      "base": 201326592
     },
     "clock_frequency": 1000000000,
     "instructions_per_tick": 2,
