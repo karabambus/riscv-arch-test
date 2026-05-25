@@ -85,9 +85,9 @@
 
 #define RVMODEL_TIMER_INT_SOON_DELAY 100
 
-// MTIME is not implemented on this DUT. Comment out to prevent testing them.
-//#define RVMODEL_MTIME_ADDRESS
-//#define RVMODEL_MTIMECMP_ADDRESS
+// CLINT machine timer in mm_ram at Sail's CLINT base (matches sail_macros.h).
+#define RVMODEL_MTIME_ADDRESS     0x0200BFF8
+#define RVMODEL_MTIMECMP_ADDRESS  0x02004000
 ##### Machine Interrupts #####
 
 // Drive cv32e20 core irq pins via mm_ram's Sail-protocol-compatible
