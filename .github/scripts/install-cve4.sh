@@ -9,7 +9,7 @@ set -euo pipefail
 
 INSTALL_DIR="${1:?Usage: install-cve4.sh <install-dir>}"
 CVE4_DV_REPO="https://github.com/openhwgroup/cv32e40p-dv-review.git"
-CVE4_DV_COMMIT="a1c4ec501e82f23987d1d74625b70a6cd1dfc2e1"
+CVE4_DV_COMMIT="1726d14796601884d54d9b0f699128800e2dcf55"
 VERILATOR_VERSION="v5.042"
 
 mkdir -p "$INSTALL_DIR/bin"
